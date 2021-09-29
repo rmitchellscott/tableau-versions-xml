@@ -25,3 +25,4 @@ These will need be defined in the Lambda fucntion > Configuration > Environment 
 | S3_URL              | no        | URL of S3 static site. If not defined, this defaults to "http://$S3_BUCKET.s3-website.$S3_REGION.amazonaws.com" | "h<span>ttps://static.example.com" |
 | STARTING_YEAR       | no        | The year to start computing major versions from. Defaults to 2020 |
 | TEST_MODE           | no        | Set to anything to upload the resulting file to versions-test.xml instead of versions.xml |
+| MAJOR_VERSION_LIST  | no        | Space-separated list of major versions, disables automatic major version detection | "2021.1 2021.2 2021.3" |
