@@ -9,6 +9,7 @@
 
 set -o pipefail
 startingYear="${STARTING_YEAR:-2020}"
+s3url="${S3_URL:-http://$S3_BUCKET.s3-website.$S3_REGION.amazonaws.com}"
 
 pointReleases=()
 currentYear=$(date +%Y)
@@ -28,8 +29,12 @@ if [[ -z "${S3_BUCKET+set}" || -z "${S3_REGION}" ]]; then
     _log "${red}ERROR! Missing s3 variables!${reset}"
     exit 1
 fi
-_log "Downloading previous version XML from http://$S3_BUCKET.s3-website.$S3_REGION.amazonaws.com/versions.xml"
-curl -s "http://$S3_BUCKET.s3-website.$S3_REGION.amazonaws.com/versions.xml" -o /tmp/oldVersions.xml
+_log "Downloading previous version XML from $s3url/versions.xml"
+curl -s -f "$s3url/versions.xml" -o /tmp/oldVersions.xml
+if [ "$?" -ne 0 ]; then
+    _log "  ${red}ERROR! File not found! Exiting.${reset}"
+    exit 1
+fi
 sed -i 1d /tmp/oldVersions.xml
 
 if [[ -z "${MAJOR_VERSION_LIST+set}" ]]; then
