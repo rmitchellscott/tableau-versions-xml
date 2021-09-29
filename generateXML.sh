@@ -137,10 +137,20 @@ done
 # _log "Building final versions.xml file"
 cat /tmp/oldVersions.xml >> /tmp/versions.xml
 _log "Copying to s3 bucket: $S3_BUCKET"
-aws s3 cp /tmp/versions.xml s3://$S3_BUCKET/versions2.xml
-if [ "$?" -eq "0" ]; then
-        _log "♫ Script complete ♫"
+if [[ -z "${TEST_MODE+set}" ]]; then
+    aws s3 cp /tmp/versions.xml s3://$S3_BUCKET/versions.xml
+    if [ "$?" -eq "0" ]; then
+            _log "♫ Script complete ♫"
+    else
+        _log "${red}S3 upload failed!${reset}"
+            exit 1
+    fi
 else
-    _log "${red}S3 upload failed!${reset}"
-        exit 1
+    aws s3 cp /tmp/versions.xml s3://$S3_BUCKET/versions-test.xml
+    if [ "$?" -eq "0" ]; then
+            _log "♫ Script complete ♫"
+    else
+        _log "${red}S3 upload failed!${reset}"
+            exit 1
+    fi
 fi
